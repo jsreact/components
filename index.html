@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Listview Example</title>
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/node_modules/slickgrid/slick.grid.css">
+        <link rel="stylesheet" href="/node_modules/slickgrid/css/smoothness/jquery-ui-1.11.3.custom.css">
+
+        <style>
+            .container {
+                margin-top: 15px;
+                width: 800px;
+            }
+
+            .listview {
+                font-family: "Roboto", "Helvetica Neue", Helvetica, sans-serif;
+                border: 1px solid #ddd;
+                min-height: 500px;
+            }
+
+            .slick-header-column.ui-state-default {
+                background: #f8f8f8;
+                border: solid 1px #d3d3d3;
+                height: 40px;
+                line-height: normal;
+                padding: 13px 15px;
+                font-size: 13px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="listview"></div>
+            <div class="listview-pager"></div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+        <script src="/node_modules/slickgrid/lib/jquery-ui-1.11.3.js"></script>
+        <script src="/node_modules/slickgrid/lib/jquery.event.drag-2.3.0.js"></script>
+
+        <script src="/node_modules/slickgrid/slick.core.js"></script>
+        <script src="/node_modules/slickgrid/slick.formatters.js"></script>
+        <script src="/node_modules/slickgrid/slick.editors.js"></script>
+        <script src="/node_modules/slickgrid/slick.grid.js"></script>
+        <script src="/node_modules/slickgrid/slick.dataview.js"></script>
+        <script src="/node_modules/slickgrid/controls/slick.pager.js"></script>
+        <script src="/ajax-data-provider.js"></script>
+        <script src="/grid.js"></script>
+        <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+        $(function() {
+            var dataProvider = new Flow.AjaxDataProvider();
+
+            var columns = [
+                {id: 'first_name', name: 'First name', field: 'first_name', width: 200},
+                {id: 'last_name', name: 'Last name', field: 'last_name', width: 150},
+                {id: 'title', name: 'Title', field: 'title', width: 250},
+                {id: 'city', name: 'City', field: 'city', width: 150},
+                {id: 'date', name: 'Date', field: 'date', width: 150},
+                {id: 'amount', name: 'Amount', field: 'amount', width: 150},
+            ];
+
+            dataProvider.prepareData(1, 20);
+
+            var options = {
+                el: $(".listview"),
+                dataProvider: dataProvider,
+                rowHeight: 32,
+                editable: false,
+                enableAddRow: false,
+                enableCellNavigation: false,
+                columns: columns
+            }
+
+            var grid = new Grid(options);
+
+            dataProvider.onDataLoaded.subscribe(function() {
+                grid.render();
+            });
+
+            /*
+            var grid = new Slick.Grid(".listview", dataProvider.getData(), columns, options);
+            var pager = new Slick.Controls.Pager(dataProvider.getData(), grid, $(".listview-pager"));
+            grid.onViewportChanged.subscribe(function (e, args) {
+                var vp = grid.getViewport();
+                dataProvider.prepareData(vp.top, vp.bottom);
+            });
+
+            grid.onSort.subscribe(function (e, args) {
+                dataProvider.setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
+                var vp = grid.getViewport();
+                dataProvider.prepareData(vp.top, vp.bottom);
+            });
+
+            dataProvider.onDataLoaded.subscribe(function() {
+                grid.updateRowCount();
+                grid.render();
+            });
+
+            grid.onViewportChanged.notify();
+            */
+        });
+        </script>
+    </body>
+</html>
