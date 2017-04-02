@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="/node_modules/slickgrid/slick.grid.css">
         <link rel="stylesheet" href="/node_modules/slickgrid/css/smoothness/jquery-ui-1.11.3.custom.css">
+        <link rel="stylesheet" href="/pager.css">
 
         <style>
             .container {
@@ -46,14 +47,13 @@
         <script src="/node_modules/slickgrid/slick.formatters.js"></script>
         <script src="/node_modules/slickgrid/slick.editors.js"></script>
         <script src="/node_modules/slickgrid/slick.grid.js"></script>
-        <script src="/node_modules/slickgrid/slick.dataview.js"></script>
-        <script src="/node_modules/slickgrid/controls/slick.pager.js"></script>
+        <script src="/data-provider.js"></script>
         <script src="/ajax-data-provider.js"></script>
-        <script src="/grid.js"></script>
+        <script src="/pager.js"></script>
         <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script type="text/javascript">
         $(function() {
-            var dataProvider = new Flow.AjaxDataProvider();
+            var dataProvider = new Slick.AjaxDataProvider();
 
             var columns = [
                 {id: 'first_name', name: 'First name', field: 'first_name', width: 200},
@@ -64,27 +64,26 @@
                 {id: 'amount', name: 'Amount', field: 'amount', width: 150},
             ];
 
-            dataProvider.prepareData(1, 20);
-
             var options = {
-                el: $(".listview"),
-                dataProvider: dataProvider,
                 rowHeight: 32,
                 editable: false,
                 enableAddRow: false,
                 enableCellNavigation: false,
-                columns: columns
             }
 
-            var grid = new Grid(options);
+            var grid = new Slick.Grid(
+                    $(".listview"),
+                    dataProvider.getData(),
+                    columns,
+                    options
+            );
+            var pager = new Slick.Pager(dataProvider, grid, $(".listview-pager"));
 
             dataProvider.onDataLoaded.subscribe(function() {
                 grid.render();
             });
 
             /*
-            var grid = new Slick.Grid(".listview", dataProvider.getData(), columns, options);
-            var pager = new Slick.Controls.Pager(dataProvider.getData(), grid, $(".listview-pager"));
             grid.onViewportChanged.subscribe(function (e, args) {
                 var vp = grid.getViewport();
                 dataProvider.prepareData(vp.top, vp.bottom);

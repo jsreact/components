@@ -6,15 +6,20 @@
    */
   function AjaxDataProvider() {
     // private
-    var perPage = 10;
+    var pageSize = 10;
+    var page = 0;
+    var totalCount = 0;
+
     var data = [];
     var url = "http://192.168.60.167:3002/api.php";
-    var timer = null;
-    var req = null; // ajax timer
+    var timeout = null;
+    var req = null;
+    var refreshHints = {};
 
     // events
     var onDataLoading = new Slick.Event();
     var onDataLoaded = new Slick.Event();
+    var onPagingInfoChanged = new Slick.Event();
 
     function init() {}
 
@@ -28,6 +33,36 @@
       return true;
     }
 
+    function setPagingOptions(args) {
+      if (args.pageSize !== undefined) {
+        pageSize = args.pageSize;
+        page = pageSize ? Math.min(page, Math.max(0, Math.ceil(totalCount / pageSize) - 1)) : 0;
+      }
+
+      if (args.pageNum !== undefined) {
+        page = Math.min(args.pageNum, Math.max(0, Math.ceil(totalCount / pageSize) - 1));
+      }
+
+      onPagingInfoChanged.notify(getPagingInfo(), null, self);
+
+      refresh();
+    }
+
+    function getPagingInfo() {
+      var totalPages = pageSize ? Math.max(1, Math.ceil(totalCount / pageSize)) : 1;
+      return {
+        pageSize: pageSize,
+        pageNum: page,
+        totalRows: totalCount,
+        totalPages: totalPages,
+        dataProvider: this
+      };
+    }
+
+    function setRefreshHints(hints) {
+      refreshHints = hints;
+    }
+
     function clear() {
       for (var key in data) {
         delete data[key];
@@ -35,52 +70,52 @@
     }
 
     function getData() {
+      prepareData();
       return data;
     }
 
-    function prepareData(from, to) {
+    function prepareData() {
       if (req) {
         req.abort();
         for (var i = req.fromPage; i <= req.toPage; i++) {
-          delete data[i * perPage];
+          delete data[i * pageSize];
         }
       }
 
-      if (from < 0) {
-        from = 0;
-      }
+      var from = page;
+      var to = page * pageSize;
 
       if (data.length > 0) {
         to = Math.min(to, data.length - 1);
       }
 
-      var fromPage = Math.floor(from / perPage);
-      var toPage = Math.floor(to / perPage);
+      var fromPage = Math.floor(from / pageSize);
+      var toPage = Math.floor(to / pageSize);
 
-      while (data[fromPage * perPage] !== undefined && fromPage < toPage)
+      while (data[fromPage * pageSize] !== undefined && fromPage < toPage)
         fromPage++;
 
-      while (data[toPage * perPage] !== undefined && fromPage < toPage)
+      while (data[toPage * pageSize] !== undefined && fromPage < toPage)
         toPage--;
 
-      if (fromPage > toPage || ((fromPage == toPage) && data[fromPage * perPage] !== undefined)) {
+      if (fromPage > toPage || ((fromPage == toPage) && data[fromPage * pageSize] !== undefined)) {
         // TODO:  look-ahead
         onDataLoaded.notify({from: from, to: to});
         return;
       }
 
-      var recStart = (fromPage * perPage);
-      var recCount = (((toPage - fromPage) * perPage) + perPage);
+      var recStart = (fromPage * pageSize);
+      var recCount = (((toPage - fromPage) * pageSize) + pageSize);
 
       url += "?page=" + recStart + "&count=" + recCount;
 
-      if (timer !== null) {
-        clearTimeout(timer);
+      if (timeout !== null) {
+        clearTimeout(timeout);
       }
 
-      timer = setTimeout(function () {
+      timeout = setTimeout(function () {
         for (var i = fromPage; i <= toPage; i++) {
-          data[i * perPage] = null; // null indicates a 'timered but not available yet'
+          data[i * pageSize] = null; // null indicates a 'timered but not available yet'
         }
 
         onDataLoading.notify({from: from, to: to});
@@ -143,13 +178,15 @@
       "isDataLoaded": isDataLoaded,
       "prepareData": prepareData,
       "refresh": refresh,
+      "getPagingInfo": getPagingInfo,
+      "setRefreshHints": setRefreshHints,
 
       // events
       "onDataLoading": onDataLoading,
-      "onDataLoaded": onDataLoaded
+      "onDataLoaded": onDataLoaded,
+      "onPagingInfoChanged": onPagingInfoChanged
     };
   }
 
-  // Slick.RemoteDataProvider
-  $.extend(true, window, { Flow: { AjaxDataProvider: AjaxDataProvider }});
+  $.extend(true, window, { Slick: { AjaxDataProvider: AjaxDataProvider }});
 })(jQuery);
