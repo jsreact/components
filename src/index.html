@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Listview Example</title>
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/node_modules/slickgrid/slick.grid.css">
+        <link rel="stylesheet" href="/node_modules/slickgrid/css/smoothness/jquery-ui-1.11.3.custom.css">
+        <link rel="stylesheet" href="/css/grid.css">
+        <style>
+            .container {
+                margin-top: 15px;
+                width: 800px;
+            }
+            .listview {
+                font-family: "Roboto", "Helvetica Neue", Helvetica, sans-serif;
+                border: 1px solid #ddd;
+                min-height: 500px;
+            }
+            .slick-header-column.ui-state-default {
+                background: #f8f8f8;
+                border: solid 1px #d3d3d3;
+                height: 40px;
+                line-height: normal;
+                padding: 13px 15px;
+                font-size: 13px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="grid"></div>
+            <div class="grid-pager"></div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+        <script src="/node_modules/slickgrid/lib/jquery-ui-1.11.3.js"></script>
+        <script src="/node_modules/slickgrid/lib/jquery.event.drag-2.3.0.js"></script>
+        <script src="/node_modules/slickgrid/slick.core.js"></script>
+        <script src="/node_modules/slickgrid/slick.formatters.js"></script>
+        <script src="/node_modules/slickgrid/slick.editors.js"></script>
+        <script src="/node_modules/slickgrid/slick.grid.js"></script>
+        <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script type="text/javascript">
+        $(function() {
+            Slick.createAjaxGrid();
+        });
+        </script>
+    </body>
+</html>
