@@ -2,9 +2,9 @@
 /* global Slick */
 
 function Pager(options) {
+  var $container = options.el;
   var dataProvider = options.dataProvider;
-  var grid = options.grid;
-  var $el = options.el;
+  var $el = $('<div class="grid-pager"/>');
   var $status;
 
   function init() {
@@ -69,76 +69,64 @@ function Pager(options) {
   }
 
   function render() {
-    $el.empty();
-
-    var $nav = $("<span class='slick-pager-nav' />").appendTo($el);
-    var $settings = $("<span class='slick-pager-settings' />").appendTo($el);
-    $status = $("<span class='slick-pager-status' />").appendTo($el);
+    var $nav = $('<ul class="pagination"/>').appendTo($el);
+    var $settings = $('<div class="grid-pagesize pagesize"/>').appendTo($el);
+    $status = $('<div class="grid-summary"/>').appendTo($el);
 
     $settings
-      .append("<span class='slick-pager-settings-expanded' style='display:none'>Show: <a data=0>All</a><a data='-1'>Auto</a><a data=25>25</a><a data=50>50</a><a data=100>100</a></span>");
+      .append('<p class="pagesize-links expanded" style="display:none"><span>Show:</span><a href="#" data-pagesize="0">All</a><a href="#" data-pagesize="25">25</a><a href="#" data-pagesize="50">50</a><a href="#" data-pagesize="100">100</a></p>');
 
-    $settings.find("a[data]").click(function (e) {
-      var pageSize = $(e.target).attr("data");
+    $settings.find("a[data-pagesize]").click(function (e) {
+      var pageSize = $(e.target).attr("data-pagesize");
       if (pageSize !== undefined) {
-        if (pageSize === -1) {
-          var vp = grid.getViewport();
-          setPageSize(vp.bottom - vp.top);
-        } else {
           setPageSize(pageSize);
-        }
       }
     });
 
-    var iconPrefix = "<span class='ui-state-default ui-corner-all ui-icon-container'><span class='ui-icon ";
-    var iconSuffix = "' /></span>";
+    var iconPrefix = '<li class="page-item"><a href="#" class="page-link">';
+    var iconSuffix = '</a></li>';
 
-    $(iconPrefix + "ui-icon-lightbulb" + iconSuffix)
+    $('<a href="#">Per page</a>')
       .click(function () {
-        $(".slick-pager-settings-expanded").toggle();
+        $(".pagesize-links.expanded").toggle();
       })
       .appendTo($settings);
 
-    $(iconPrefix + "ui-icon-seek-first" + iconSuffix)
+    $(iconPrefix + '<i class="page-icon page-icon-first"><<</i>' + iconSuffix)
       .click(gotoFirst)
       .appendTo($nav);
 
-    $(iconPrefix + "ui-icon-seek-prev" + iconSuffix)
+    $(iconPrefix + '<i class="page-icon page-icon-prev"><</i>' + iconSuffix)
       .click(gotoPrev)
       .appendTo($nav);
 
-    $(iconPrefix + "ui-icon-seek-next" + iconSuffix)
+    $(iconPrefix + '<i class="page-icon page-icon-next">></i>' + iconSuffix)
       .click(gotoNext)
       .appendTo($nav);
 
-    $(iconPrefix + "ui-icon-seek-end" + iconSuffix)
+    $(iconPrefix + '<i class="page-icon page-icon-last">>></i>' + iconSuffix)
       .click(gotoLast)
       .appendTo($nav);
 
-    $el.find(".ui-icon-container")
-      .hover(function () {
-        $(this).toggleClass("ui-state-hover");
-      });
-
-    $el.children().wrapAll("<div class='slick-pager' />");
+    $container.append($el);
   }
 
 
   function updatePager(pager) {
     var state = getState();
 
-    $el.find(".slick-pager-nav span").removeClass("ui-state-disabled");
+    $el.find(".pager-pagination .page-link").removeClass("disabled");
     if (!state.canGotoFirst) {
-      $el.find(".ui-icon-seek-first").addClass("ui-state-disabled");
+      $el.find(".page-icon-first").addClass("disabled");
     }
     if (!state.canGotoLast) {
-      $el.find(".ui-icon-seek-end").addClass("ui-state-disabled");
+      $el.find(".page-icon-last").addClass("disabled");
     }
     if (!state.canGotoNext) {
-      $el.find(".ui-icon-seek-next").addClass("ui-state-disabled");
+      $el.find(".page-icon-next").addClass("disabled");
     }
     if (!state.canGotoPrev) {
-      $el.find(".ui-icon-seek-prev").addClass("ui-state-disabled");
+      $el.find(".page-icon-prev").addClass("disabled");
     }
 
     if (pager.pageSize === 0) {

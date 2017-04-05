@@ -1,11 +1,11 @@
-import browserSync from 'browser-sync';
-import gulp from 'gulp';
-import sass from 'gulp-sass';
-import eslint from 'gulp-eslint';
-import plumber from 'gulp-plumber';
-import rollup from 'gulp-better-rollup';
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+const browserSync = require('browser-sync');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const eslint = require('gulp-eslint');
+const plumber = require('gulp-plumber');
+const rollup = require('gulp-better-rollup');
+const commonjs = require('rollup-plugin-commonjs');
+const resolve = require('rollup-plugin-node-resolve');
 
 gulp.task('js', () => {
   gulp.src('./src/js/**/*.js')

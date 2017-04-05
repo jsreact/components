@@ -12,14 +12,17 @@ function AjaxDataProvider() {
   var totalCount = 0;
   var data = [];
   var url = 'http://192.168.60.167:3002/api.php';
-  var timeout;
-  var request;
+
   var onDataLoaded = new Slick.Event();
   var onDataLoading = new Slick.Event();
   var onPaginationUpdated = new Slick.Event();
   var refreshHints = {};
 
-  function init() {}
+  function init() {
+    if (data.length <= 0) {
+      prepareData();
+    }
+  }
 
   function setRefreshHints(hints) {
     refreshHints = hints;
@@ -47,50 +50,27 @@ function AjaxDataProvider() {
     var to = from;
     if (resp.data.length > 0) {
       to = from + resp.data.length;
-      data.concat(resp.data);
+      data = data.concat(resp.data);
     }
 
-    request = null;
     onDataLoaded.notify({ from: from, to: to });
   }
 
   function prepareData() {
-    var from = page;
-    var to = page * pageSize;
+    onDataLoading.notify({ from: page, to: page * pageSize });
 
-    if (request) {
-      request.abort();
-      data.splice(from, to);
-    }
-
-    if (data.length > 0) {
-      to = Math.min(to, data.length - 1);
-    }
-
-    url += '?page=' + page + '&per_page=' + pageSize;
-
-    if (timeout !== null) {
-      clearTimeout(timeout);
-    }
-
-    timeout = setTimeout(function requestTimeout() {
-      data.splice(from, to);
-
-      onDataLoading.notify({ from: from, to: to });
-
-      request = $.ajax({
-        url: url,
-        type: 'get',
-        dataType: 'json',
-        cache: true,
-        success: onSuccess,
-        error: onError
-      });
-    }, 50);
+    $.ajax({
+      url: url,
+      type: 'get',
+      data: { page: page, per_page: pageSize },
+      dataType: 'json',
+      cache: true,
+      success: onSuccess,
+      error: onError
+    });
   }
 
   function getData() {
-    prepareData();
     return data;
   }
 

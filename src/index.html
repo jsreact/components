@@ -11,9 +11,9 @@
         <style>
             .container {
                 margin-top: 15px;
-                width: 800px;
+                width: 700px;
             }
-            .listview {
+            .grid {
                 font-family: "Roboto", "Helvetica Neue", Helvetica, sans-serif;
                 border: 1px solid #ddd;
                 min-height: 500px;
@@ -31,9 +31,83 @@
     </head>
     <body>
 
-        <div class="container">
-            <div class="grid"></div>
-            <div class="grid-pager"></div>
+        <div class="container grid-view">
+            <div class="grid">
+                <div class="grid-header">
+                    <div class="grid-header-columns grid-header-groups"
+                    style="width: 1000px">
+                        <div class="grid-column" style="width: 100px">
+                            <div class="grid-column-label">Affiliate Site</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column" style="width: 300px;">
+                            <div class="grid-column-label">Impressions</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column" style="width: 200px;">
+                            <div class="grid-column-label">Clicks</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column">
+                            <div class="grid-column-label">Leads</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column">
+                            <div class="grid-column-label">Sales</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                    </div>
+                    <div class="grid-header-columns" style="width: 1000px;">
+                        <div class="grid-column grid-column-sortable"
+                        style="width: 100px">
+                            <div class="grid-column-label">Name</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column grid-column-sortable"
+                        style="width: 100px;">
+                            <div class="grid-column-label">#raw</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column grid-column-sortable"
+                        style="width: 100px;">
+                            <div class="grid-column-label">#unique</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column grid-column-sortable"
+                        style="width: 100px">
+                            <div class="grid-column-label">Banner</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column grid-column-sortable"
+                        style="width: 60px">
+                            <div class="grid-column-label">#</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                        <div class="grid-column grid-column-sortable"
+                        style="width: 140px">
+                            <div class="grid-column-label">Comission</div>
+                            <span class="grid-column-sort"></span>
+                            <div class="grid-column-resize"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-viewport">
+                    <div class="grid-canvas">
+                    </div>
+                </div>
+                <div class="pagination">
+                </div>
+            </div>
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
@@ -42,12 +116,11 @@
         <script src="/node_modules/slickgrid/slick.core.js"></script>
         <script src="/node_modules/slickgrid/slick.formatters.js"></script>
         <script src="/node_modules/slickgrid/slick.editors.js"></script>
-        <script src="/node_modules/slickgrid/slick.grid.js"></script>
         <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="/js/index.js"></script>
         <script type="text/javascript">
         $(function() {
-            Slick.createAjaxGrid();
+        //    Slick.createAjaxGrid();
         });
         </script>
     </body>

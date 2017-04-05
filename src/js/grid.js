@@ -98,7 +98,7 @@ function Grid(container, data, columns, options) {
   // private
   var initialized = false;
   var $container;
-  var uid = "slickgrid_" + Math.round(1000000 * Math.random());
+  var uid = "grid-" + Math.round(1000000 * Math.random());
   var self = this;
   var $focusSink, $focusSink2;
   var $headerScroller;
@@ -460,9 +460,7 @@ function Grid(container, data, columns, options) {
     var w=canvasWidth + (viewportHasVScroll ? scrollbarDimensions.width : 0);
     $headerRowSpacer.width(w);
     if (options.createFooterRow) { $footerRowSpacer.width(w); }
-
-    if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) {
-      applyColumnWidths();
+if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) { applyColumnWidths();
     }
   }
 

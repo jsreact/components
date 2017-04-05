@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* global $ */
 import './core';
 import Grid from './grid';
@@ -26,9 +27,10 @@ export function createAjaxGrid() {
     }
   );
 
-  var pager = new Pager({ dataProvider, grid, el: $('.grid-pager') });
+  var pager = new Pager({ dataProvider, el: $('.grid-view') });
 
-  dataProvider.onDataLoaded.subscribe(function renderGrid() {
+  dataProvider.onDataLoaded.subscribe(function () {
+    console.log( dataProvider.getData() );
     grid.render();
   });
 
