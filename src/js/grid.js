@@ -3,13 +3,13 @@
 
 // make sure required JavaScript modules are loaded
 if (typeof jQuery === "undefined") {
-  throw "Grid requires jquery module to be loaded";
+  throw "GridView requires jquery to be loaded.";
 }
 if (!jQuery.fn.drag) {
-  throw "Grid requires jquery.event.drag module to be loaded";
+  throw "GridView requires jquery.event.drag to be loaded.";
 }
 if (typeof Slick === "undefined") {
-  throw "slick.core.js not loaded";
+  throw "GridView core is not loaded.";
 }
 
 
@@ -17,19 +17,15 @@ if (typeof Slick === "undefined") {
 var scrollbarDimensions;
 var maxSupportedCssHeight;  // browser's breaking point
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-// Grid class implementation (available as Slick.Grid)
+// GridView class implementation (available as Slick.GridView)
 
 /**
  * Creates a new instance of the grid.
- * @class Grid
+ * @class GridView
  * @constructor
- * @param {Node}              container   Container node to create the grid in.
- * @param {Array,Object}      data        An array of objects for databinding.
- * @param {Array}             columns     An array of column definitions.
- * @param {Object}            options     Grid options.
+ * @param {Object}            options     GridView options.
  **/
-function Grid(container, data, columns, options) {
+function GridView(container, data, columns, options) {
   // settings
   var defaults = {
     explicitInitialization: false,
@@ -178,13 +174,10 @@ function Grid(container, data, columns, options) {
   var $hiddenParents;
   var oldProps = [];
 
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  // Initialization
-
   function init() {
     $container = $(container);
     if ($container.length < 1) {
-      throw new Error("Grid requires a valid container, " + container + " does not exist in the DOM.");
+      throw new Error("GridView requires a valid container, " + container + " does not exist in the DOM.");
     }
 
     cacheCssForHiddenInit();
@@ -211,7 +204,7 @@ function Grid(container, data, columns, options) {
 
     // validate loaded JavaScript modules against requested options
     if (options.enableColumnReorder && !$.fn.sortable) {
-      throw new Error("Grid's 'enableColumnReorder = true' option requires jquery-ui.sortable module to be loaded");
+      throw new Error("GridView's 'enableColumnReorder = true' option requires jquery-ui.sortable module to be loaded");
     }
 
     editController = {
@@ -288,7 +281,7 @@ function Grid(container, data, columns, options) {
       // calculate the diff so we can set consistent sizes
       measureCellPaddingAndBorder();
 
-      // for usability reasons, all text selection in Grid is disabled
+      // for usability reasons, all text selection in GridView is disabled
       // with the exception of input and textarea elements (selection must
       // be enabled there so that editors work as expected); note that
       // selection in grid cells (grid body) is already unavailable in
@@ -460,7 +453,7 @@ function Grid(container, data, columns, options) {
     var w=canvasWidth + (viewportHasVScroll ? scrollbarDimensions.width : 0);
     $headerRowSpacer.width(w);
     if (options.createFooterRow) { $footerRowSpacer.width(w); }
-if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) { applyColumnWidths();
+    if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) { applyColumnWidths();
     }
   }
 
@@ -2829,7 +2822,7 @@ function makeActiveCellEditable(editor) {
     return;
   }
   if (!options.editable) {
-    throw "Grid : makeActiveCellEditable : should never get called when options.editable is false";
+    throw "GridView : makeActiveCellEditable : should never get called when options.editable is false";
   }
 
   // cancel pending async call if there is one
@@ -2941,7 +2934,7 @@ function getActiveCellPosition() {
   return absBox(activeCellNode);
 }
 
-function getGridPosition() {
+function getGridViewPosition() {
   return absBox($container[0])
 }
 
@@ -3551,7 +3544,7 @@ this.eval = function (expr) {
 // Public API
 
 $.extend(this, {
-  "slickGridVersion": "2.3.3",
+  "slickGridViewVersion": "2.3.3",
 
   // Events
   "onScroll": new Slick.Event(),
@@ -3661,7 +3654,7 @@ $.extend(this, {
   "setFooterRowVisibility": setFooterRowVisibility,
   "getFooterRow": getFooterRow,
   "getFooterRowColumn": getFooterRowColumn,
-  "getGridPosition": getGridPosition,
+  "getGridViewPosition": getGridViewPosition,
   "flashCell": flashCell,
   "addCellCssStyles": addCellCssStyles,
   "setCellCssStyles": setCellCssStyles,
@@ -3679,5 +3672,5 @@ $.extend(this, {
 init();
 }
 
-export default Grid;
+export default GridView;
 

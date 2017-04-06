@@ -162,7 +162,7 @@ export function EventHandler() {
     handlers = [];
 
     return this;  // allow chaining
-  }
+  };
 }
 
 /***
@@ -209,7 +209,7 @@ export function Range(fromRow, fromCell, toRow, toCell) {
    * @method isSingleRow
    * @return {Boolean}
    */
-  this.isSingleRow = function () {
+  this.isSingleRow = function() {
     return this.fromRow == this.toRow;
   };
 
@@ -229,7 +229,7 @@ export function Range(fromRow, fromCell, toRow, toCell) {
    * @param cell {Integer}
    * @return {Boolean}
    */
-  this.contains = function (row, cell) {
+  this.contains = function(row, cell) {
     return row >= this.fromRow && row <= this.toRow &&
       cell >= this.fromCell && cell <= this.toCell;
   };
@@ -239,14 +239,14 @@ export function Range(fromRow, fromCell, toRow, toCell) {
    * @method toString
    * @return {String}
    */
-  this.toString = function () {
+  this.toString = function() {
     if (this.isSingleCell()) {
       return "(" + this.fromRow + ":" + this.fromCell + ")";
     }
     else {
       return "(" + this.fromRow + ":" + this.fromCell + " - " + this.toRow + ":" + this.toCell + ")";
     }
-  }
+  };
 }
 
 

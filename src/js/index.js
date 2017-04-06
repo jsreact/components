@@ -53,5 +53,26 @@ export function createAjaxGrid() {
 
   grid.onViewportChanged.notify();
   */
+
+  var provider = new DataProvider({
+    url: 'http://192.168.60.167:3002/api.php',
+    pagination: {
+      pageSize: 10,
+      maxLimit: 500,
+    }
+  });
+
+  new GridView({
+    el: $(".gridview"),
+    dataProvider: provider,
+    height: 550,
+    groupable: true,
+    sortable: true,
+    pageable: {
+    },
+    columns: [
+    ]
+  });
+
 }
 
