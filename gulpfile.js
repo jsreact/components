@@ -6,9 +6,11 @@ const plumber = require('gulp-plumber');
 const rollup = require('gulp-better-rollup');
 const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
+const babel = require('rollup-plugin-babel');
+const jasmine = require('gulp-jasmine');
 
 gulp.task('js', () => {
-  gulp.src('./src/js/**/*.js')
+  gulp.src('./src/js/index.js')
     .pipe(plumber())
     .pipe(rollup({
       plugins: [
@@ -19,13 +21,27 @@ gulp.task('js', () => {
         commonjs({
           include: './src/js',
           extensions: ['.js']
+        }),
+        babel({
+          presets: [["es2015", { modules: false }]],
+          exclude: 'node_modules/**',
+          plugins: ['external-helpers'],
+          externalHelpers: true
         })
       ],
       format: 'umd',
-      moduleName: 'Slick'
+      moduleName: 'Flow'
     }))
     .pipe(gulp.dest('./dist/js'))
     .pipe(browserSync.stream());
+});
+
+gulp.task('test', () => {
+  gulp.src('spec/**')
+    .pipe(plumber())
+    .pipe(jasmine({
+      config: 'spec/support/jasmine.json'
+    }));
 });
 
 gulp.task('eslint', function() {
@@ -52,7 +68,7 @@ gulp.task('html', function() {
 
 gulp.task('serve', ['html', 'eslint', 'js', 'sass'], function() {
   browserSync.init({
-    server: ['./dist', './']
+    server: ['./dist', './examples', './']
   });
 
   gulp.watch('./src/js/*.js', ['eslint', 'js']);

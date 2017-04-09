@@ -4,9 +4,6 @@
         <title>Listview Example</title>
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/node_modules/slickgrid/slick.grid.css">
-        <link rel="stylesheet" href="/node_modules/slickgrid/css/smoothness/jquery-ui-1.11.3.custom.css">
         <link rel="stylesheet" href="/css/grid.css">
         <style>
             .container {
@@ -111,16 +108,37 @@
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
-        <script src="/node_modules/slickgrid/lib/jquery-ui-1.11.3.js"></script>
-        <script src="/node_modules/slickgrid/lib/jquery.event.drag-2.3.0.js"></script>
-        <script src="/node_modules/slickgrid/slick.core.js"></script>
-        <script src="/node_modules/slickgrid/slick.formatters.js"></script>
-        <script src="/node_modules/slickgrid/slick.editors.js"></script>
-        <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="/js/index.js"></script>
         <script type="text/javascript">
         $(function() {
-        //    Slick.createAjaxGrid();
+
+var e = new Flow.Emitter();
+e.on('foo', () => console.log('foo fired'));
+e.trigger('foo');
+
+            var dataProvider = new Flow.AjaxDataProvider({
+                url: 'http://192.168.60.167:3002/api.php',
+                pagination: {
+                    pageSize: 25,
+                    pageParam: 'page',
+                }
+            });
+
+            var grid = new Flow.Grid({
+                el: $('.grid'),
+                dataProvider: dataProvider,
+                editable: false,
+                sortable: false,
+                filterable: false,
+                columns: [
+                    { id: 'first_name', name: 'First name', field: 'first_name', width: 200 },
+                    { id: 'last_name', name: 'Last name', field: 'last_name', width: 150 },
+                    { id: 'title', name: 'Title', field: 'title', width: 250 },
+                    { id: 'city', name: 'City', field: 'city', width: 150 },
+                    { id: 'date', name: 'Date', field: 'date', width: 150 },
+                    { id: 'amount', name: 'Amount', field: 'amount', width: 150 }
+                ]
+            });
         });
         </script>
     </body>

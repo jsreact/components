@@ -1,95 +1,99 @@
-/* global Slick, $ */
+/* eslint-disable */
+/* global $ */
+import Emitter from './emitter';
+import Pagination from './pagination';
 
-/**
- * A sample AJAX data store implementation.
- * Right now, it's hooked up to load Hackernews stories, but can
- * easily be extended to support any JSONP-compatible backend that accepts paging parameters.
- */
-function AjaxDataProvider() {
-  // private
-  var pageSize = 10;
-  var page = 0;
-  var totalCount = 0;
-  var data = [];
-  var url = 'http://192.168.60.167:3002/api.php';
+class AjaxDataProvider extends Emitter {
+  constructor() {
+    super();
 
-  var onDataLoaded = new Slick.Event();
-  var onDataLoading = new Slick.Event();
-  var onPaginationUpdated = new Slick.Event();
-  var refreshHints = {};
+    this.pageSize = 10;
+    this.page = 0;
+    this.totalCount = 0;
+    this.data = [];
 
-  function init() {
-    if (data.length <= 0) {
-      prepareData();
+    this.pagination = new Pagination({
+    });
+
+    this.url = 'http://192.168.60.167:3002/api.php';
+    this.refreshHints = {};
+    if (this.data.length <= 0) {
+      this.prepareData();
     }
   }
 
-  function setRefreshHints(hints) {
-    refreshHints = hints;
+  setRefreshHints(hints) {
+    this.refreshHints = hints;
   }
 
-  function getRefreshHints() {
-    return refreshHints;
+  getRefreshHints() {
+    return this.refreshHints;
   }
 
-  function isDataLoaded(from, to) {
-    return data.slice(from, to)
-               .filter(i => i).length > 0;
+  isDataLoaded(from, to) {
+    return this.data.slice(from, to)
+      .filter(i => i).length > 0;
   }
 
-  function clearData() {
-    data.splice(page, (page * pageSize));
+  clearData() {
+    this.data.splice(this.page, (this.page * this.pageSize));
   }
 
-  function onError() {
-    throw new Error('Could not load page: ' + [page, page * pageSize].join('-'));
+  onError() {
+    throw new Error('Could not load page: ' + [
+      this.page, this.page * this.pageSize
+    ].join('-'));
   }
 
-  function onSuccess(resp) {
-    var from = page * pageSize;
+  onSuccess(resp) {
+    var from = this.page * this.pageSize;
     var to = from;
     if (resp.data.length > 0) {
       to = from + resp.data.length;
-      data = data.concat(resp.data);
+      this.data = this.data.concat(resp.data);
     }
 
-    onDataLoaded.notify({ from: from, to: to });
-  }
-
-  function prepareData() {
-    onDataLoading.notify({ from: page, to: page * pageSize });
-
-    $.ajax({
-      url: url,
-      type: 'get',
-      data: { page: page, per_page: pageSize },
-      dataType: 'json',
-      cache: true,
-      success: onSuccess,
-      error: onError
+    this.emit('dataLoaded', {
+      from: from, to: to
     });
   }
 
-  function getData() {
-    return data;
+  prepareData() {
+    this.emit('dataLoading', {
+      from: this.page, to: this.page * this.pageSize
+    });
+
+    $.ajax({
+      url: this.url,
+      type: 'get',
+      data: { page: this.page, per_page: this.pageSize },
+      dataType: 'json',
+      cache: true,
+      success: this.onSuccess.bind(this),
+      error: this.onError.bind(this)
+    });
   }
 
-  function refresh(from, to) {
-    clearData();
-    getData(from, to);
+  getData() {
+    return this.data;
   }
 
-  function getPagination() {
-    var totalPages = page * pageSize;
+  refresh(from, to) {
+    this.clearData();
+    this.getData(from, to);
+  }
+
+  getPagination() {
+    var totalPages = this.page * this.pageSize;
     return {
-      page: page,
-      pageSize: pageSize,
-      totalCount: totalCount,
-      totalPages: totalPages
+      page: this.page,
+      pageSize: this.pageSize,
+      totalCount: this.totalCount,
+      totalPages: this.totalPages
     };
   }
 
-  function setPaginationOptions(args) {
+  setPaginationOptions(args) {
     var defaultPageSize = Math.max(0, Math.ceil(totalCount / pageSize) - 1);
 
     if (args.pageSize !== undefined) {
@@ -98,40 +102,21 @@ function AjaxDataProvider() {
     }
 
     if (args.page !== undefined) {
-      page = Math.min(args.page, defaultPageSize);
+      this.page = Math.min(args.page, defaultPageSize);
     }
 
     onPaginationUpdated.notify(getPagination(), null, self);
 
-    refresh();
+    this.refresh();
   }
 
-  function setPageSize(value) {
+  setPageSize(value) {
     pageSize = value;
   }
 
-  function getPageSize() {
+  getPageSize() {
     return pageSize;
   }
-
-  init();
-
-  return {
-    getData: getData,
-    isDataLoaded: isDataLoaded,
-    prepareData: prepareData,
-    refresh: refresh,
-    setPageSize: setPageSize,
-    getPageSize: getPageSize,
-    getPagination: getPagination,
-    setPaginationOptions: setPaginationOptions,
-    setRefreshHints: setRefreshHints,
-    getRefreshHints: getRefreshHints,
-
-    onDataLoaded: onDataLoaded,
-    onDataLoading: onDataLoading,
-    onPaginationUpdated: onPaginationUpdated
-  };
 }
 
 export default AjaxDataProvider;

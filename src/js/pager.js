@@ -1,25 +1,25 @@
 /* eslint-disable */
-/* global Slick */
+import Emitter from './emitter';
 
-function Pager(options) {
-  var $container = options.el;
-  var dataProvider = options.dataProvider;
-  var $el = $('<div class="grid-pager"/>');
-  var $status;
+class Pager extends Emitter {
+  contructor(options) {
+    var $container = options.el;
+    var dataProvider = options.dataProvider;
+    var $el = $('<div class="grid-pager"/>');
+    var $status;
 
-  function init() {
-    render();
+    this.render();
     registerEvents();
     updatePager(dataProvider.getPagination());
   }
 
-  function registerEvents() {
+  registerEvents() {
     dataProvider.onPaginationUpdated.subscribe(function(e, pager) {
       updatePager(pager);
     });
   }
 
-  function getState() {
+  getState() {
     var locked = !Slick.GlobalEditorLock.commitCurrentEdit();
     var pager = dataProvider.getPagination();
     var lastPage = pager.totalPages - 1;
@@ -33,7 +33,7 @@ function Pager(options) {
     };
   }
 
-  function setPageSize(n) {
+  setPageSize(n) {
     dataProvider.setRefreshHints({
       isFilterUnchanged: true
     });
@@ -41,34 +41,34 @@ function Pager(options) {
     dataProvider.setPageSize(n);
   }
 
-  function gotoFirst() {
+  gotoFirst() {
     if (getState().canGotoFirst) {
       dataProvider.setPageSize(0);
     }
   }
 
-  function gotoLast() {
+  gotoLast() {
     var state = getState();
     if (state.canGotoLast) {
       dataProvider.setPageSize(state.pager.totalPages - 1);
     }
   }
 
-  function gotoPrev() {
+  gotoPrev() {
     var state = getState();
     if (state.canGotoPrev) {
       dataProvider.setPageSize(state.pager.page - 1);
     }
   }
 
-  function gotoNext() {
+  gotoNext() {
     var state = getState();
     if (state.canGotoNext) {
       dataProvider.setPageSize(state.pager.page + 1);
     }
   }
 
-  function render() {
+  render() {
     var $nav = $('<ul class="pagination"/>').appendTo($el);
     var $settings = $('<div class="grid-pagesize pagesize"/>').appendTo($el);
     $status = $('<div class="grid-summary"/>').appendTo($el);
@@ -76,7 +76,7 @@ function Pager(options) {
     $settings
       .append('<p class="pagesize-links expanded" style="display:none"><span>Show:</span><a href="#" data-pagesize="0">All</a><a href="#" data-pagesize="25">25</a><a href="#" data-pagesize="50">50</a><a href="#" data-pagesize="100">100</a></p>');
 
-    $settings.find("a[data-pagesize]").click(function (e) {
+    $settings.find("a[data-pagesize]").click((e) => {
       var pageSize = $(e.target).attr("data-pagesize");
       if (pageSize !== undefined) {
           setPageSize(pageSize);
@@ -87,7 +87,7 @@ function Pager(options) {
     var iconSuffix = '</a></li>';
 
     $('<a href="#">Per page</a>')
-      .click(function () {
+      .click(() => {
         $(".pagesize-links.expanded").toggle();
       })
       .appendTo($settings);
@@ -112,7 +112,7 @@ function Pager(options) {
   }
 
 
-  function updatePager(pager) {
+  updatePager(pager) {
     var state = getState();
 
     $el.find(".pager-pagination .page-link").removeClass("disabled");
@@ -135,8 +135,6 @@ function Pager(options) {
       $status.text("Showing page " + (pager.page + 1) + " of " + pager.totalPages);
     }
   }
-
-  init();
 }
 
 export default Pager;

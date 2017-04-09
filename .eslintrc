@@ -2,7 +2,8 @@
 
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "mocha": true
   },
 
   "extends": "airbnb-base/legacy",
@@ -10,9 +11,7 @@
   "parser": "babel-eslint",
 
   "rules": {
-    "strict": 0,
-
-    "no-console": 1
+    "func-names": "off"
   }
 
 }
