@@ -102,8 +102,6 @@
                     <div class="grid-canvas">
                     </div>
                 </div>
-                <div class="pagination">
-                </div>
             </div>
         </div>
 
@@ -111,11 +109,6 @@
         <script src="/js/index.js"></script>
         <script type="text/javascript">
         $(function() {
-
-var e = new Flow.Emitter();
-e.on('foo', () => console.log('foo fired'));
-e.trigger('foo');
-
             var dataProvider = new Flow.AjaxDataProvider({
                 url: 'http://192.168.60.167:3002/api.php',
                 pagination: {

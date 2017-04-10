@@ -3,20 +3,19 @@ import Emitter from './emitter';
 
 class Pager extends Emitter {
   contructor(options) {
-    var $container = options.el;
-    var dataProvider = options.dataProvider;
-    var $el = $('<div class="grid-pager"/>');
-    var $status;
+    this.container = options.el;
+    this.provider = options.dataProvider;
+    this.el = $('<div class="grid-pager"/>');
+    this.status = null;
 
     this.render();
-    registerEvents();
-    updatePager(dataProvider.getPagination());
+    this.registerEvents();
+    this.pagination = this.provider.pagination;
+    this.updatePager(this.pagination);
   }
 
   registerEvents() {
-    dataProvider.onPaginationUpdated.subscribe(function(e, pager) {
-      updatePager(pager);
-    });
+    this.pagination.on('update', this.updatePager);
   }
 
   getState() {
@@ -34,11 +33,9 @@ class Pager extends Emitter {
   }
 
   setPageSize(n) {
-    dataProvider.setRefreshHints({
-      isFilterUnchanged: true
-    });
+    this.provider.setRefreshHints({ updateFilter: false });
     var page = parseInt(n, 10);
-    dataProvider.setPageSize(n);
+    this.pagination.setPageSize(n);
   }
 
   gotoFirst() {
@@ -69,17 +66,18 @@ class Pager extends Emitter {
   }
 
   render() {
-    var $nav = $('<ul class="pagination"/>').appendTo($el);
-    var $settings = $('<div class="grid-pagesize pagesize"/>').appendTo($el);
-    $status = $('<div class="grid-summary"/>').appendTo($el);
+    const { el } = this;
+    const nav = $('<ul class="pagination"/>').appendTo(el);
+    const settings = $('<div class="grid-pagesize pagesize"/>').appendTo(el);
+    this.status = $('<div class="grid-summary"/>').appendTo(el);
 
-    $settings
+    settings
       .append('<p class="pagesize-links expanded" style="display:none"><span>Show:</span><a href="#" data-pagesize="0">All</a><a href="#" data-pagesize="25">25</a><a href="#" data-pagesize="50">50</a><a href="#" data-pagesize="100">100</a></p>');
 
-    $settings.find("a[data-pagesize]").click((e) => {
-      var pageSize = $(e.target).attr("data-pagesize");
-      if (pageSize !== undefined) {
-          setPageSize(pageSize);
+    settings.find("a[data-pagesize]").click((e) => {
+      var pageSize = $(e.target).data("pagesize");
+      if (typeof pageSize !== 'undefined') {
+          this.setPageSize(pageSize);
       }
     });
 
@@ -112,27 +110,28 @@ class Pager extends Emitter {
   }
 
 
-  updatePager(pager) {
-    var state = getState();
+  updatePager(pagination) {
+    var state = this.getState();
+    const { el, status } = this;
 
-    $el.find(".pager-pagination .page-link").removeClass("disabled");
+    el.find(".pager-pagination .page-link").removeClass("disabled");
     if (!state.canGotoFirst) {
-      $el.find(".page-icon-first").addClass("disabled");
+      el.find(".page-icon-first").addClass("disabled");
     }
     if (!state.canGotoLast) {
-      $el.find(".page-icon-last").addClass("disabled");
+      el.find(".page-icon-last").addClass("disabled");
     }
     if (!state.canGotoNext) {
-      $el.find(".page-icon-next").addClass("disabled");
+      el.find(".page-icon-next").addClass("disabled");
     }
     if (!state.canGotoPrev) {
-      $el.find(".page-icon-prev").addClass("disabled");
+      el.find(".page-icon-prev").addClass("disabled");
     }
 
-    if (pager.pageSize === 0) {
-      $status.text("Showing all " + pager.totalCount + " rows");
+    if (pagination.pageSize === 0) {
+      status.text("Showing all " + pagination.totalCount + " rows");
     } else {
-      $status.text("Showing page " + (pager.page + 1) + " of " + pager.totalPages);
+      status.text("Showing page " + (pagination.page + 1) + " of " + pagination.totalPages);
     }
   }
 }

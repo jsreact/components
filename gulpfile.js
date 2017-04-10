@@ -14,16 +14,10 @@ gulp.task('js', () => {
     .pipe(plumber())
     .pipe(rollup({
       plugins: [
-        resolve({
-          jsnext: true,
-          main: true
-        }),
-        commonjs({
-          include: './src/js',
-          extensions: ['.js']
-        }),
+        resolve({ jsnext: true, main: true }),
+        commonjs({ include: './src/js', extensions: ['.js'] }),
         babel({
-          presets: [["es2015", { modules: false }]],
+          presets: [['es2015', { modules: false }]],
           exclude: 'node_modules/**',
           plugins: ['external-helpers'],
           externalHelpers: true
